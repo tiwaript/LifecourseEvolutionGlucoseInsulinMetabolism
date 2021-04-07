@@ -101,4 +101,8 @@ which(colnames(dat_delta) %in% var_delta)
 dat_delta<-dat_delta[,-c(1:50)]
 dat_model_wc<-merge(dat_model_wc,dat_delta,by=0)
 dat_model_wc<-na.roughfix(dat_model_wc) # final data for determinant of homa-b and homa-s
-# 
+dat_model_wc$ratio_homaBS<-dat_model_wc$homa_beta_18/dat_model_wc$homa_sens_18
+# discretized variable add 
+dat_discretized<-read.csv("Data_homaBS_ratio.csv")
+dat_model_wc<-cbind(dat_model_wc,dat_discretized)
+dat_model_wc<-dat_model_wc[,-c(95,96)]
