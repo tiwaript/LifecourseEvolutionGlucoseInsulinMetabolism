@@ -8,10 +8,50 @@ require(ggplot2)
 ################ Figure1 (18years) ##############
 #plot1<-
 png("Figure1(18years).png",height = 6,width = 6,units = 'in',res=300)
-  ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
-              aes(x = homa_sens_18,  y = homa_beta_18, color = class)) +
+ggplot(data = na.omit(dat_bergplot), 
+       aes(x = homa_sens_18,  y = homa_beta_18, color = class)) +
+  geom_point(aes(group = class, color = class),shape = 1, size = 2) + 
+  scale_color_manual(values = c('chartreuse4', 'red')) +
+  geom_smooth(se = T) + 
+  ggtitle("18years") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()) + 
+  
+  xlab("Insulin Sensitivity") +ylab("Insulin Secretion") + 
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )
+
+  dev.off()
+############### 12 years #############
+plot2<-
+
+png("Figure2(12years).png",height = 6,width = 6,units = 'in',res=300)
+ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
+              aes(x = homa_sens_12,  y = homa_beta_12, color = class)) + 
   geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
-  geom_smooth(aes(group=class,color=class),alpha=0.15)+ggtitle("Bergman plot (18years)")+
+  geom_smooth(aes(group=class,color=class))+ggtitle("Bergman plot (12 years)")+
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))+
+  xlab("Insulin Sensitivity")+ylab("Insulin Secretion")+
+  #theme(legend.position="bottom")
+    theme(
+      legend.position = c(.95, .95),
+      legend.justification = c("right", "top"),
+      legend.box.just = "right",
+      legend.margin = margin(6, 6, 6, 6)
+    )
+  dev.off() 
+############## 6 years ##############
+plot3<-
+png("Figure3 (6 years).png",height = 6,width = 6,units = 'in',res=300)
+ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
+              aes(x = homa_sens_6,  y = homa_beta_6, color = class)) +
+  geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
+  geom_smooth(aes(group=class,color=class),alpha=0.2)+ggtitle("Bergman_plot(6 years)")+
   theme(plot.title = element_text(hjust = 0.5,face="bold"))+
   xlab("Insulin Sensitivity")+ylab("Insulin Secretion")+
   #theme(legend.position="none")
@@ -21,22 +61,7 @@ png("Figure1(18years).png",height = 6,width = 6,units = 'in',res=300)
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6)
   )
-  dev.off()
-############### 12 years #############
-plot2<-ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
-              aes(x = homa_sens_12,  y = homa_beta_12, color = class)) + 
-  geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
-  geom_smooth(aes(group=class,color=class),alpha=0.15)+ggtitle("Bergman_plot(12 years)")+
-  theme(plot.title = element_text(hjust = 0.5,face="bold"))+
-  xlab("Insulin Sensitivity")+ylab("Insulin Secretion")+theme(legend.position="bottom")
-############## 6 years ##############
-plot3<-ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
-              aes(x = homa_sens_6,  y = homa_beta_6, color = class)) +
-  geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
-  geom_smooth(aes(group=class,color=class),alpha=0.2)+ggtitle("Bergman_plot(6 years)")+
-  theme(plot.title = element_text(hjust = 0.5,face="bold"))+
-  xlab("Homa_sensitivity")+ylab("Homa Beta")+
-  theme(legend.position="none")
+dev.off() 
 
 ##################################
 
