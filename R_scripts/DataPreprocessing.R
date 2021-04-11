@@ -7,7 +7,9 @@ require(randomForest)
 
 dat_ihoma<-read.spss("./Data/PMNS PREDIABETES DATA_27JUNE2019.sav",
                      to.data.frame = T,use.value.labels = T)
-
+dat_bergplot<-na.omit(dat_ihoma[,c("key","sex","homa_sens_18","homa_beta_18",
+                                   "homa_sens_12","homa_beta_12",
+                                   "homa_sens_6","homa_beta_6")]) #n=624
 dat_PMNS<-read.spss("./Data/pmns original.sav",to.data.frame = T,use.value.labels = T)
 # Data for determinants of HOMA-S and HOMA-B
 # Complete cases data for insulin sensenitivity and secretion
