@@ -7,10 +7,19 @@ require(randomForest)
 
 dat_ihoma<-read.spss("./Data/PMNS PREDIABETES DATA_27JUNE2019.sav",
                      to.data.frame = T,use.value.labels = T)
+# data for 6,12, 18 year plot
 dat_bergplot<-na.omit(dat_ihoma[,c("key","sex","homa_sens_18","homa_beta_18",
                                    "homa_sens_12","homa_beta_12",
                                    "homa_sens_6","homa_beta_6","cgly_st_18yr")]) #n=624
+dat_bergplot_long<-
 colnames(dat_bergplot)[9]<-"class"
+# data for 6,12,18 in one plot same scale
+colnames(dat_bergplot)[3:8]<-c("homasens_18","homabeta_18","homasens_12","homabeta_12",
+                               "homasens_6","homabeta_6")
+                               
+dat_bergplot_long<-reshape(dat_bergplot,varying = c("homasens_6","homasens_12","homasens_18",
+                                               "homabeta_6","homabeta_12","homabeta_18"),
+                           direction = "long",idvar = "key",sep="_")
 dat_PMNS<-read.spss("./Data/pmns original.sav",to.data.frame = T,use.value.labels = T)
 # Data for determinants of HOMA-S and HOMA-B
 # Complete cases data for insulin sensenitivity and secretion
