@@ -8,16 +8,15 @@ require(ggplot2)
 ################ Figure1 (18years) ##############
 #plot1<-
 png("Figure1(18years).png",height = 6,width = 6,units = 'in',res=300)
-ggplot(data = na.omit(dat_bergplot), 
+ggplot(data = na.omit(dat_bergplot[,c("homa_sens_18","homa_beta_18","class")]), 
        aes(x = homa_sens_18,  y = homa_beta_18, color = class)) +
   geom_point(aes(group = class, color = class),shape = 1, size = 2) + 
   scale_color_manual(values = c('chartreuse4', 'red')) +
   geom_smooth(se = T) + 
   ggtitle("18years") +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank()) + 
-  
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+  #      axis.title.x = element_blank(),
+  #      axis.title.y = element_blank()) + 
   xlab("Insulin Sensitivity") +ylab("Insulin Secretion") + 
   theme(
     legend.position = c(.95, .95),
