@@ -7,12 +7,27 @@ require(randomForest)
 
 dat_ihoma<-read.spss("./Data/PMNS PREDIABETES DATA_27JUNE2019.sav",
                      to.data.frame = T,use.value.labels = T)
+index_prediabetes1<-which((dat_ihoma$glucose_f18>=100 & dat_ihoma$glucose_f18<=125))  
+index_prediabetes2<-which((dat_ihoma$glucose_2h_18>=140 & dat_ihoma$glucose_2h_18<=199))
+index_prediabetes<-unique(c(index_prediabetes1,index_prediabetes2))
+dat_ihoma$class<-NA
+dat_ihoma$class[index_prediabetes]<-"Prediabetes"
+dat_ihoma$class[-index_prediabetes]<-"NGT"
+####
+for (i in 1:nrow(dat_ihoma)){
+  if(is.na(dat_ihoma[i,11]) & is.na(dat_ihoma[i,12])){
+    dat_ihoma$class[i]<-NA
+  }
+}
 # data for 6,12, 18 year plot
-dat_bergplot<-na.omit(dat_ihoma[,c("key","sex","homa_sens_18","homa_beta_18",
+dat_bergplot<-dat_ihoma[,c("key","sex","homa_sens_18","homa_beta_18",
                                    "homa_sens_12","homa_beta_12",
-                                   "homa_sens_6","homa_beta_6","cgly_st_18yr")]) #n=624
+                                   "homa_sens_6","homa_beta_6","class")] dat
+test<-na.omit(dat_bergplot)
+table(test$class,test$sex)
+#colnames(dat_bergplot)[9]<-"class"
 dat_bergplot_long<-
-colnames(dat_bergplot)[9]<-"class"
+
 # data for 6,12,18 in one plot same scale
 colnames(dat_bergplot)[3:8]<-c("homasens_18","homabeta_18","homasens_12","homabeta_12",
                                "homasens_6","homabeta_6")
@@ -118,3 +133,44 @@ dat_model_wc$ratio_homaBS<-dat_model_wc$homa_beta_18/dat_model_wc$homa_sens_18
 dat_discretized<-read.csv("Data_homaBS_ratio.csv")
 dat_model_wc<-cbind(dat_model_wc,dat_discretized)
 dat_model_wc<-dat_model_wc[,-c(95,96)]
+# Cohort Characteir...table 
+## table 1 both gender 
+dat_table<-dat_ihoma[,c("key","sex","class","glucose_f18","glucose_30_18","glucose_2h_18",
+                        "insulin_f18","insulin_30_18","insulin_2h_18",
+                        "homa_sens_18","homa_beta_18","glucose_f12",
+                         "insuline_f12","homa_sens_12","homa_beta_12",
+                        "glucose_f6","glucose_30_6","glucose_2h_6",
+                        "insulin_f6","insulin_30_6","insulin_2h_6",
+                        "homa_sens_6","homa_beta_6")]
+df_table1<-data.frame(var=character(),med_NGT=numeric(),
+                      med_prediabetes=numeric(),stringsAsFactors = F)
+
+for(i in 4:ncol(dat_table)){
+  median_val<-tapply(dat_table[,i],dat_table$class,median,na.rm=T)
+  iqr_val<-tapply(dat_table[,i],dat_table$class,summary,na.rm=T)
+  NGT_val<-paste(median_val[1],"(",iqr_val[[1]][2],",",iqr_val[[1]][5],")")
+  Prediabetes_val<-paste(median_val[2],"(",iqr_val[[2]][2],",",iqr_val[[2]][5],")")
+  df_table1[i,]<-c(colnames(dat_table)[i],NGT_val,Prediabetes_val)
+}
+# table male
+df_table1_m<-data.frame(var=character(),med_NGT=numeric(),
+                      med_prediabetes=numeric(),stringsAsFactors = F)
+
+for(i in 4:ncol(dat_table[dat_table$sex=="Male",])){
+  median_val<-tapply(dat_table[dat_table$sex=="Male",i],dat_table$class[dat_table$sex=="Male"],median,na.rm=T)
+  iqr_val<-tapply(dat_table[dat_table$sex=="Male",i],dat_table$class[dat_table$sex=="Male"],summary,na.rm=T)
+  NGT_val<-paste(median_val[1],"(",iqr_val[[1]][2],",",iqr_val[[1]][5],")")
+  Prediabetes_val<-paste(median_val[2],"(",iqr_val[[2]][2],",",iqr_val[[2]][5],")")
+  df_table1_m[i,]<-c(colnames(dat_table)[i],NGT_val,Prediabetes_val)
+}
+# table female
+df_table1_f<-data.frame(var=character(),med_NGT=numeric(),
+                        med_prediabetes=numeric(),stringsAsFactors = F)
+
+for(i in 4:ncol(dat_table[dat_table$sex=="Female",])){
+  median_val<-tapply(dat_table[dat_table$sex=="Female",i],dat_table$class[dat_table$sex=="Female"],median,na.rm=T)
+  iqr_val<-tapply(dat_table[dat_table$sex=="Female",i],dat_table$class[dat_table$sex=="Female"],summary,na.rm=T)
+  NGT_val<-paste(median_val[1],"(",iqr_val[[1]][2],",",iqr_val[[1]][5],")")
+  Prediabetes_val<-paste(median_val[2],"(",iqr_val[[2]][2],",",iqr_val[[2]][5],")")
+  df_table1_f[i,]<-c(colnames(dat_table)[i],NGT_val,Prediabetes_val)
+}
