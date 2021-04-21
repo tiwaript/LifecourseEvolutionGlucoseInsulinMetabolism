@@ -30,7 +30,7 @@ ggplot(data = na.omit(dat_bergplot[,c("homa_sens_18","homa_beta_18","class")]),
 plot2<-
 
 png("Figure2(12years).png",height = 6,width = 6,units = 'in',res=300)
-ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
+ggplot(data = na.omit(dat_bergplot[,c("homa_sens_12","homa_beta_12","class")]), 
               aes(x = homa_sens_12,  y = homa_beta_12, color = class)) + 
   geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
   geom_smooth(aes(group=class,color=class))+ggtitle("Bergman plot (12 years)")+
@@ -47,7 +47,7 @@ ggplot(data = dat_bergplot[complete.cases(dat_bergplot),],
 ############## 6 years ##############
 plot3<-
 png("Figure3 (6 years).png",height = 6,width = 6,units = 'in',res=300)
-ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], 
+ggplot(data = na.omit(dat_bergplot[,c("homa_sens_6","homa_beta_6","class")]), 
               aes(x = homa_sens_6,  y = homa_beta_6, color = class)) +
   geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
   geom_smooth(aes(group=class,color=class),alpha=0.2)+ggtitle("Bergman_plot(6 years)")+
