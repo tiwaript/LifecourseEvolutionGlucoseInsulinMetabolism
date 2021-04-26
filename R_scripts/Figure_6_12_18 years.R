@@ -1,14 +1,17 @@
 ##Code for following plots :: 
 #Figure 1, Figure2  and Figure3
-## Raw data 
-## x, y limit data 
-## Gender separated data 
+## Raw data plot
+## x, y limit data plot
+## Gender separated data plot
+## log transformed plot
 require(ggplot2)
 
 ################ Figure1 (18years) ##############
 #plot1<-
 png("Figure1(18years).png",height = 6,width = 6,units = 'in',res=300)
-ggplot(data = na.omit(dat_bergplot[,c("homa_sens_18","homa_beta_18","class")]), 
+pdf("Figure1(18years).pdf")
+plot1<-
+  ggplot(data = na.omit(dat_bergplot[,c("homa_sens_18","homa_beta_18","class")]), 
        aes(x = homa_sens_18,  y = homa_beta_18, color = class)) +
   geom_point(aes(group = class, color = class),shape = 1, size = 2) + 
   scale_color_manual(values = c('chartreuse4', 'red')) +
@@ -29,11 +32,11 @@ ggplot(data = na.omit(dat_bergplot[,c("homa_sens_18","homa_beta_18","class")]),
 ############### 12 years #############
 plot2<-
 
-png("Figure2(12years).png",height = 6,width = 6,units = 'in',res=300)
+#png("Figure2(12years).png",height = 6,width = 6,units = 'in',res=300)
 ggplot(data = na.omit(dat_bergplot[,c("homa_sens_12","homa_beta_12","class")]), 
               aes(x = homa_sens_12,  y = homa_beta_12, color = class)) + 
   geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
-  geom_smooth(aes(group=class,color=class))+ggtitle("Bergman plot (12 years)")+
+  geom_smooth(aes(group=class,color=class))+ggtitle("12years")+
   theme(plot.title = element_text(hjust = 0.5,face="bold"))+
   xlab("Insulin Sensitivity")+ylab("Insulin Secretion")+
   #theme(legend.position="bottom")
@@ -46,11 +49,11 @@ ggplot(data = na.omit(dat_bergplot[,c("homa_sens_12","homa_beta_12","class")]),
   dev.off() 
 ############## 6 years ##############
 plot3<-
-png("Figure3 (6 years).png",height = 6,width = 6,units = 'in',res=300)
+#png("Figure3 (6 years).png",height = 6,width = 6,units = 'in',res=300)
 ggplot(data = na.omit(dat_bergplot[,c("homa_sens_6","homa_beta_6","class")]), 
               aes(x = homa_sens_6,  y = homa_beta_6, color = class)) +
   geom_point(shape=1,size=2)+scale_color_manual(values=c('chartreuse4','red'))+
-  geom_smooth(aes(group=class,color=class),alpha=0.2)+ggtitle("Bergman_plot(6 years)")+
+  geom_smooth(aes(group=class,color=class),span=1)+ggtitle("6years")+
   theme(plot.title = element_text(hjust = 0.5,face="bold"))+
   xlab("Insulin Sensitivity")+ylab("Insulin Secretion")+
   #theme(legend.position="none")
@@ -59,7 +62,7 @@ ggplot(data = na.omit(dat_bergplot[,c("homa_sens_6","homa_beta_6","class")]),
     legend.justification = c("right", "top"),
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6)
-  )
+  ) 
 dev.off() 
 
 ##################################
@@ -103,7 +106,7 @@ ggplot(data = dat_bergplot[complete.cases(dat_bergplot),], aes(x = homa_sens_6, 
 ################################################
 require(gridExtra)
 png("BergmanPlotSmooth6_12_18years.png", width = 10, height = 8, units = 'in', res = 300)
-grid.arrange(plot1, plot2, plot3,ncol=3)
+grid.arrange(plot1, plot2, plot3,plot1log,plot2log,plot3log,ncol=3)
 dev.off()
 ################################# get legend ########################
 get_legend<-function(myggplot){
@@ -112,4 +115,60 @@ get_legend<-function(myggplot){
   legend <- tmp$grobs[[leg]]
   return(legend)
 }
+##### log transformed plot 
+plot1log<-
+  ggplot(data = na.omit(dat_bergplot[,c("homa_sens_18","homa_beta_18","class")]), 
+       aes(x = log(homa_sens_18),  y = log(homa_beta_18), color = class)) +
+  geom_point(aes(group = class, color = class),shape = 1, size = 2) + 
+  scale_color_manual(values = c('chartreuse4', 'red')) +
+  geom_smooth(method="lm",se = T) + 
+  #ggtitle("18years") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+  #      axis.title.x = element_blank(),
+  #      axis.title.y = element_blank()) + 
+  xlab("log(Insulin Sensitivity)") +ylab("log(Insulin Secretion)") + 
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )
 
+plot2log<-
+ggplot(data = na.omit(dat_bergplot[,c("homa_sens_12","homa_beta_12","class")]), 
+       aes(x = log(homa_sens_12),  y = log(homa_beta_12), color = class)) +
+  geom_point(aes(group = class, color = class),shape = 1, size = 2) + 
+  scale_color_manual(values = c('chartreuse4', 'red')) +
+  geom_smooth(method="lm",se = T) + 
+  #ggtitle("12years") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+  #      axis.title.x = element_blank(),
+  #      axis.title.y = element_blank()) + 
+  xlab("log(Insulin Sensitivity)") +ylab("log(Insulin Secretion)") + 
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )
+plot3log<-
+ggplot(data = na.omit(dat_bergplot[,c("homa_sens_6","homa_beta_6","class")]), 
+       aes(x = log(homa_sens_6),  y = log(homa_beta_6), color = class)) +
+  geom_point(aes(group = class, color = class),shape = 1, size = 2) + 
+  scale_color_manual(values = c('chartreuse4', 'red')) +
+  geom_smooth(method="lm",se = T) + 
+  #ggtitle("6years") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))+
+  #      axis.title.x = element_blank(),
+  #      axis.title.y = element_blank()) + 
+  xlab("log(Insulin Sensitivity)") +ylab("log(Insulin Secretion)") + 
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )
+#### figure1 Manuscript
+png("Figure1.png",height = 8,width=10,units = 'in',res=300,type="cairo")
+grid.arrange(plot3, plot2, plot1,plot3log,plot2log,plot1log,ncol=3)
+dev.off()
