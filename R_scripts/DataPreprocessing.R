@@ -7,6 +7,7 @@ require(randomForest)
 
 dat_ihoma<-read.spss("./Data/PMNS PREDIABETES DATA_27JUNE2019.sav",
                      to.data.frame = T,use.value.labels = T)
+# Classification into Prediabetes
 index_prediabetes1<-which((dat_ihoma$glucose_f18>=100 & dat_ihoma$glucose_f18<=125))  
 index_prediabetes2<-which((dat_ihoma$glucose_2h_18>=140 & dat_ihoma$glucose_2h_18<=199))
 index_prediabetes<-unique(c(index_prediabetes1,index_prediabetes2))
@@ -153,15 +154,16 @@ for(i in 4:ncol(dat_table)){
   df_table1[i,]<-c(colnames(dat_table)[i],NGT_val,Prediabetes_val)
 }
 # table male
+dat_table_m<-dat_table[dat_table$sex=="Male",]
 df_table1_m<-data.frame(var=character(),med_NGT=numeric(),
                       med_prediabetes=numeric(),stringsAsFactors = F)
 
-for(i in 4:ncol(dat_table[dat_table$sex=="Male",])){
-  median_val<-tapply(dat_table[dat_table$sex=="Male",i],dat_table$class[dat_table$sex=="Male"],median,na.rm=T)
-  iqr_val<-tapply(dat_table[dat_table$sex=="Male",i],dat_table$class[dat_table$sex=="Male"],summary,na.rm=T)
+for(i in 4:ncol(dat_table_m)){
+  median_val<-tapply(dat_table_m[,i],dat_table_m$class,median,na.rm=T)
+  iqr_val<-tapply(dat_table_m[,i],dat_table_m$class,summary,na.rm=T)
   NGT_val<-paste(median_val[1],"(",iqr_val[[1]][2],",",iqr_val[[1]][5],")")
   Prediabetes_val<-paste(median_val[2],"(",iqr_val[[2]][2],",",iqr_val[[2]][5],")")
-  df_table1_m[i,]<-c(colnames(dat_table)[i],NGT_val,Prediabetes_val)
+  df_table1_m[i,]<-c(colnames(dat_table_m)[i],NGT_val,Prediabetes_val)
 }
 # table female
 df_table1_f<-data.frame(var=character(),med_NGT=numeric(),
@@ -174,3 +176,6 @@ for(i in 4:ncol(dat_table[dat_table$sex=="Female",])){
   Prediabetes_val<-paste(median_val[2],"(",iqr_val[[2]][2],",",iqr_val[[2]][5],")")
   df_table1_f[i,]<-c(colnames(dat_table)[i],NGT_val,Prediabetes_val)
 }
+write.csv(na.omit(df_table1),"Table_both_gender.csv")
+write.csv(na.omit(df_table1_m),"Table_male.csv")
+write.csv(na.omit(df_table1_f),"Table_female.csv")
